@@ -3,13 +3,13 @@ install:
 		pip install -r requirements.txt
 
 test:
-	python -m pytest -vv --cov=main --cov=mylib test_*.py
+	python -m pytest -vv test_*.py
 
 format:	
 	black *.py 
 
 lint:
-	ruff check *.py mylib/*.py
+	ruff check *.py 
 
 container-lint:
 	docker run --rm -i hadolint/hadolint < Dockerfile
@@ -30,17 +30,11 @@ generate_and_push:
 		git config --local user.email "action@github.com"; \
 		git config --local user.name "GitHub Action"; \
 		git add .; \
-		git commit -m "Add SQL log"; \
+		git commit -m "Add ML Runs"; \
 		git push; \
 	else \
 		echo "No changes to commit. Skipping commit and push."; \
 	fi
 
-extract:
-	python main.py extract
-
-transform_load: 
-	python main.py transform_load
-
-query:
-	python main.py general_query "SELECT t1.server, t1.opponent, AVG(t1.seconds_before_next_point) as avg_seconds_before_next_point, COUNT(*) as total_matches_played FROM default.servetimesdb t1 JOIN default.eventtimesdb t2 ON t1.id = t2.id GROUP BY t1.server, t1.opponent ORDER BY total_matches_played DESC LIMIT 10"
+ml_run:
+	python main.py

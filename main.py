@@ -1,53 +1,38 @@
-"""handles cli commands"""
-import sys
-import argparse
-from mylib.extract import extract
-from mylib.transform_load import load
-from mylib.query import (
-    general_query,
-)
-
-
-def handle_arguments(args):
-    """add action based on inital calls"""
-    parser = argparse.ArgumentParser(description="ETL-Query script")
-    parser.add_argument(
-        "action",
-        choices=[
-            "extract",
-            "transform_load",
-            "update_record",
-            "delete_record",
-            "create_record",
-            "general_query",
-            "read_data",
-        ],
-    )
-    args = parser.parse_args(args[:1])
-    print(args.action)
-
-    if args.action == "general_query":
-        parser.add_argument("query")
-
-    # parse again with ever
-    return parser.parse_args(sys.argv[1:])
+"""runs a simple machine learning expirement"""
+import mlflow
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
 
 
 def main():
-    """handles all the cli commands"""
-    args = handle_arguments(sys.argv[1:])
+    """runs a basic logistic regression model
+    and logs it with mlflow"""
+    df = pd.read_csv("data/serve_times.csv", delimiter=",")
 
-    if args.action == "extract":
-        print("Extracting data...")
-        extract()
-    elif args.action == "transform_load":
-        print("Transforming data...")
-        load()
-    elif args.action == "general_query":
-        general_query(args.query)
+    features = df[["seconds_before_next_point"]]
+    target = df["server"]
 
-    else:
-        print(f"Unknown action: {args.action}")
+    X_train, X_test, y_train, y_test = train_test_split(
+        features, target, test_size=0.2, random_state=42
+    )
+
+    clf = LogisticRegression(max_iter=1000)
+
+    clf.fit(X_train, y_train)
+
+    y_pred = clf.predict(X_test)
+
+    accuracy = accuracy_score(y_test, y_pred)
+
+    with mlflow.start_run():
+        mlflow.log_param("model", "LogisticRegression")
+        mlflow.log_param("data_path", "data/serve_times.csv")
+
+        mlflow.log_metric("accuracy", accuracy)
+
+        mlflow.sklearn.log_model(clf, "model")
 
 
 if __name__ == "__main__":
