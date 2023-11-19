@@ -32,7 +32,7 @@ def main():
 
         mlflow.log_metric("accuracy", accuracy)
 
-        mlflow.sklearn.log_model(clf, artifact_path="mlruns")
+        mlflow.sklearn.log_model(clf, "mlruns/0")
 
 
 if __name__ == "__main__":
