@@ -1,0 +1,15 @@
+artifact_uri: file:///home/runner/work/Jeremy_Tan_IDS706_Week12/Jeremy_Tan_IDS706_Week12/mlruns/0/7a58be8a319b4c0381e88d3265634e81/artifacts
+end_time: 1700373226457
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 7a58be8a319b4c0381e88d3265634e81
+run_name: polite-stork-929
+run_uuid: 7a58be8a319b4c0381e88d3265634e81
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1700373224666
+status: 3
+tags: []
+user_id: runner
